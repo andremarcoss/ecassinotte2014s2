@@ -1,0 +1,101 @@
+<ui:composition template ="WEB-INF/template/template.xhtml"
+      xmlns = "http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:p="http://primefaces.org/ui">
+    
+    <ui:define name ="conteudo">
+        <h:form id = "formUsu">
+            
+            <script type="text/javascript">
+            function Validacao(args) {
+                if(args.validationFailed) {
+                    PF('dlgUsuario').jq.effect("shake", {times:5}, 100);
+                }
+                else {
+                    PF('dlgUsuario').hide();
+                }
+            }
+            </script>
+                      
+            <p:panel styleClass="paineis" header="Usuarios" >
+            
+                <p:dataTable id="painelDados" var="usuarios" value="#{usuarioBean.listaUsuarios}" styleClass="tabela">
+                    <f:facet name="header">
+                        Usuarios do Sistema
+                    </f:facet>
+                    <p:column headerText="ID">
+                        <h:outputText value="#{usuarios.id}" />
+                    </p:column>
+                    
+                    <p:column headerText="Nome">
+                        <h:outputText value="#{usuarios.nome}" />
+                    </p:column>
+                    
+                    <p:column headerText="Senha">
+                         <h:outputText value="*************" />
+                    </p:column>
+            
+                    <p:column style="width:32px;text-align: center">
+                        <p:commandButton icon="ui-icon-pencil" title="Edição" oncomplete="PF('dlgUsuario').show();"  
+                                         process="@this" disabled="#{sessionScope.usuario == usuarios.nome}" >
+                            <f:setPropertyActionListener value="#{usuarios}" target="#{usuarioBean.usuarioSelecionado}"  />
+                            <p:ajax update=":formPrincipal:formUsu:dlgUsu"/>
+                        </p:commandButton>
+                    </p:column>
+                    
+                    
+                    <p:column style="width:32px;text-align: center">
+                        <p:commandButton icon="ui-icon-trash" title="Remover" update=":formPrincipal:growl painelDados" 
+                                         action="#{usuarioBean.remove()}" process="@this" disabled="#{sessionScope.usuario == usuarios.nome}" >
+                            <f:setPropertyActionListener value="#{usuarios}" target="#{usuarioBean.usuarioSelecionado}"  />
+                            <p:confirm header="Confirmação" message="Deseja realmente remover este Usuario?" icon="ui-icon-alert" />
+                        </p:commandButton>
+                    </p:column>
+                 
+                    <f:facet name="footer">
+                        <p:commandButton icon="ui-icon-plus" title="Adicionar" oncomplete="PF('dlgUsuario').show();" 
+                                         process="@this" value="Adicionar Usuario" action="#{usuarioBean.novoUsuario()}" >
+                            <p:ajax update=":formPrincipal:formUsu:dlgUsu"/>
+                        </p:commandButton>
+                    </f:facet>
+                    
+                </p:dataTable>
+                
+            </p:panel>
+            
+            <p:dialog header="Dados Usuario" widgetVar="dlgUsuario" showEffect="explode" hideEffect="bounce" height="100" id="dlgUsu"
+                      modal="true" position="center" dynamic="true" resizable="false" draggable="false">
+                
+                <h:panelGrid columns="2" style="font-size: 13px;text-align: center">
+                    
+                    <p:outputLabel value="Usuário : " for ="usuario" />
+                    <p:inputText id ="usuario" required ="true" label="Usuário" value = "#{usuarioBean.usuarioSelecionado.nome}"/>
+                                    
+                    <p:outputLabel value="Senha : " for ="senha" />
+                    <p:password id="senha" value="#{usuarioBean.usuarioSelecionado.senha}" label="Senha" required="true"/>
+                    
+                    <p:commandButton icon="ui-icon-pencil" value="Alterar" process="dlgUsu" update=":formPrincipal:growl painelDados"
+                                     actionListener="#{usuarioBean.altera}" oncomplete="Validacao(args)"
+                                     rendered="#{not empty usuarioBean.usuarioSelecionado.id}">
+                    </p:commandButton>
+                    
+                    <p:commandButton icon="ui-icon-plus" value="Adiciona" process="dlgUsu" update=":formPrincipal:growl painelDados" 
+                                     actionListener="#{usuarioBean.adiciona()}" oncomplete="Validacao(args)"
+                                     rendered="#{empty usuarioBean.usuarioSelecionado.id}">
+                    </p:commandButton>
+                                       
+                </h:panelGrid>
+                
+            </p:dialog>
+            
+            <p:confirmDialog global="true" showEffect="fade" style="font-size: 13px">
+                <p:commandButton value="Sim" type="button" styleClass="ui-confirmdialog-yes" icon="ui-icon-check" />
+                <p:commandButton value="Não" type="button" styleClass="ui-confirmdialog-no" icon="ui-icon-close" />
+            </p:confirmDialog>
+            
+        </h:form>
+    </ui:define>
+    
+</ui:composition>

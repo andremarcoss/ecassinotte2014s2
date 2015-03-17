@@ -1,0 +1,88 @@
+<ui:composition template ="WEB-INF/template/template.xhtml"
+      xmlns = "http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:p="http://primefaces.org/ui">
+    
+    <ui:define name ="conteudo">
+        <h:form>
+
+            <p:panel styleClass="paineis" header="Desassociação de Tag's a Perguntas" id="painel" >
+                
+                <h:panelGrid columns="4" cellpadding="1">
+                    <p:outputLabel value ="Tag: " for ="lista" />
+                    <p:selectOneMenu id="lista" value="#{desassociarTag.idSelecionado}" required ="true">
+                            <f:selectItem itemLabel="Selecione uma TAG" itemValue="" />
+                            <f:selectItems value = "#{tagBean.tags}"
+                                var ="tag"
+                                itemLabel ="#{tag.tag}"
+                                itemValue ="#{tag.id}" />
+                    </p:selectOneMenu>
+                    <p:message for ="lista" />
+            
+                    <p:commandButton value="Carregar">
+                        <f:ajax event ="click" execute= "lista" listener="#{desassociarTag.preparaDesc()}"
+                                render ="painel" >
+                        </f:ajax>
+                    </p:commandButton>
+            
+                </h:panelGrid>
+                
+                <p:separator rendered="#{not empty desassociarTag.tag }"/>
+                
+                <p:panelGrid columns="2" rendered="#{not empty desassociarTag.tag }">
+                
+                    <h:outputText value="Id:" />
+                    <h:outputText value="#{desassociarTag.tag.id}" />
+ 
+                    <h:outputText value="Descrição:" />
+                    <h:outputText value="#{desassociarTag.tag.descricao}" escape="false" />
+ 
+                    <h:outputText value="Tag:" />
+                    <h:outputText value="#{desassociarTag.tag.tag}" />
+            
+                </p:panelGrid>
+                
+                <p:spacer/>
+                
+                <p:dataTable id="ListaAssoc" var="perg" value="#{desassociarTag.tag.perguntas}" selection="#{desassociarTag.itensSelecionados}" 
+                             rowKey="#{perg.id}" styleClass="tabela" rendered="#{not empty desassociarTag.tag }" sortMode="multiple"
+                             emptyMessage="Nenhuma Pergunta Associada a Tag">
+                    
+                    <f:facet name="header">
+                        Selecione os itens para remoção
+                    </f:facet>
+                    <p:column selectionMode="multiple" style="width:16px;text-align:center"/>
+                
+                    <p:column headerText="Id" sortBy="#{perg.id}">
+                        <h:outputText value="#{perg.id}"  />
+                    </p:column>
+                
+                    <p:column headerText="Descrição" sortBy="#{perg.descricao}">
+                        <h:outputText value="#{perg.descricao}" />
+                    </p:column>
+                    <p:column headerText="Pergunta" sortBy="#{perg.pergunta}">
+                        <h:outputText value="#{perg.pergunta}" escape="false"/>
+                    </p:column>
+                    
+                    <p:column headerText="Tipo" sortBy="#{perg.tipo}">
+                        <h:outputText value="#{perg.tipo == 1 ? 'Objetiva' : 'Multipla-Escolha' }" />
+                    </p:column>
+                    
+                </p:dataTable>
+                
+                <p:separator rendered="#{not empty desassociarTag.tag }"/>
+                
+                <p:commandButton value="Desassociar" rendered="#{not empty desassociarTag.tag }" update=":formPrincipal:growl">
+                    <f:ajax event ="click" execute= "ListaAssoc" listener="#{desassociarTag.desassociar()}"
+                                render ="@form" >
+                        </f:ajax>
+                </p:commandButton>                
+    
+            </p:panel>
+            
+        </h:form>
+    </ui:define>
+    
+</ui:composition>

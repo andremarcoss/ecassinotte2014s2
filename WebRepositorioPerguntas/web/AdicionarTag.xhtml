@@ -1,0 +1,57 @@
+<ui:composition template ="WEB-INF/template/template.xhtml"
+      xmlns = "http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:p="http://primefaces.org/ui">
+    
+    <ui:define name ="conteudo">
+        <h:form>
+          
+            <h:inputHidden value ="#{tagBean.tag.id}"/>
+            
+            <p:panel styleClass="paineis" header="Cadastramento de Tag's" >
+                <h:panelGrid columns="3" cellpadding="3">
+                                   
+                    <p:outputLabel value="Tag : " for ="tag" />
+                    <p:inputText id ="tag" required ="true" value = "#{tagBean.tag.tag}" >
+                    </p:inputText>
+            
+                    <p:message for = "tag" />
+                    
+                    <p:outputLabel value="Descrição : " for ="descricao" />
+                    <p:editor id="descricao" widgetVar="editorWidget" value="#{tagBean.tag.descricao}"
+                              width="600" required ="true" controls=" bold
+                                                                           italic
+                                                                           underline
+                                                                           strikethrough
+                                                                           subscript
+                                                                           superscript
+                                                                           font
+                                                                           size
+                                                                           style
+                                                                           color
+                                                                           highlight
+                                                                           bullets
+                                                                           numbering
+                                                                           alignleft
+                                                                           center
+                                                                           alignright
+                                                                           justify"  />
+                    <p:message for = "descricao" />
+                              
+                </h:panelGrid>
+                
+                <p:separator />
+                
+                <p:commandButton value="Cadastrar" icon="ui-icon-check" update=":formPrincipal:growl"  >
+                    <f:ajax event ="click" execute= "@form" listener="#{tagBean.adiciona}"
+                            render ="@form"  />
+                </p:commandButton>
+                
+            </p:panel>
+            
+        </h:form>
+    </ui:define>
+    
+</ui:composition>

@@ -1,0 +1,84 @@
+<ui:composition template ="WEB-INF/template/template.xhtml"
+      xmlns = "http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:p="http://primefaces.org/ui">
+    
+    <ui:define name ="conteudo">
+        <h:form>
+            
+            <p:panel styleClass="paineis" header="Alteração de Generos" id ="painel" >
+            
+                <h:panelGrid columns="4" cellpadding="1">
+                    <p:outputLabel value ="Genero: " for ="lista" />
+                    <p:selectOneMenu id="lista" value="#{alteracaoGeneroBean.seleciondado}" required ="true">
+                            <f:selectItem itemLabel="Selecione o Genero" itemValue="" />
+                            <f:selectItems value = "#{generoBean.generos}"
+                                var ="genero"
+                                itemLabel ="#{genero.genero}"
+                                itemValue ="#{genero.id}" />
+                    </p:selectOneMenu>
+                    <p:message for ="lista" />
+            
+                    <p:commandButton value="Carregar">
+                        <f:ajax event ="click" execute= "lista" listener="#{alteracaoGeneroBean.preparaAlteracao()}"
+                                render ="painel :formPrincipal:growl" >
+                        </f:ajax>
+                    </p:commandButton>
+            
+                </h:panelGrid>
+                
+                <p:separator rendered="#{not empty alteracaoGeneroBean.genero}"/>
+                
+                <p:panelGrid columns="3" id="NumeroGenero" rendered="#{not empty alteracaoGeneroBean.genero}" >
+                            <h:outputLabel value="ID: "/>
+                            <h:outputText value ="#{alteracaoGeneroBean.genero.id}" />
+                </p:panelGrid>
+               
+                <h:panelGrid columns="3" cellpadding="3" id="dadosGenero" rendered="#{not empty alteracaoGeneroBean.genero}" >
+                                   
+                    <p:outputLabel value="Genero : " for ="genero" />
+                    <p:inputText id ="genero" required ="true" value = "#{alteracaoGeneroBean.genero.genero}" 
+                                 rendered="#{not empty alteracaoGeneroBean.genero}" >
+                    </p:inputText>
+                
+                    <p:message for = "genero" />
+                    
+                    <p:outputLabel value="Descrição : " for ="descricao" />
+                    <p:editor id="descricao" widgetVar="editorWidget" value="#{alteracaoGeneroBean.genero.descricao}"
+                              width="600" required ="true" controls=" bold
+                                                                           italic
+                                                                           underline
+                                                                           strikethrough
+                                                                           subscript
+                                                                           superscript
+                                                                           font
+                                                                           size
+                                                                           style
+                                                                           color
+                                                                           highlight
+                                                                           bullets
+                                                                           numbering
+                                                                           alignleft
+                                                                           center
+                                                                           alignright
+                                                                           justify"  />
+                    <p:message for = "descricao" />
+                    
+                    <p:commandButton value="Alterar Gênero" update = ":formPrincipal:growl">
+                        <f:ajax event ="click" execute= "dadosGenero" listener="#{alteracaoGeneroBean.altera()}"
+                                render ="@form" >
+                        </f:ajax>
+                    </p:commandButton>
+                      
+                </h:panelGrid>
+                
+                <p:separator rendered="#{not empty alteracaoGeneroBean.genero}"/>
+                       
+         </p:panel>
+            
+        </h:form>
+    </ui:define>
+    
+</ui:composition>

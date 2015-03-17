@@ -1,0 +1,85 @@
+<ui:composition template ="WEB-INF/template/template.xhtml"
+      xmlns = "http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:p="http://primefaces.org/ui">
+    
+    <ui:define name ="conteudo">
+        <h:form>
+
+            <p:panel styleClass="paineis" header="Associação de Tag's a Perguntas" id="painel" >
+                
+                <h:panelGrid columns="4" cellpadding="1">
+                    <p:outputLabel value ="Tag: " for ="lista" />
+                    <p:selectOneMenu id="lista" value="#{associacaoTag.idSelecionado}" required ="true">
+                            <f:selectItem itemLabel="Selecione uma TAG" itemValue="" />
+                            <f:selectItems value = "#{tagBean.tags}"
+                                var ="tag"
+                                itemLabel ="#{tag.tag}"
+                                itemValue ="#{tag.id}" />
+                    </p:selectOneMenu>
+                    <p:message for ="lista" />
+            
+                    <p:commandButton value="Carregar">
+                        <f:ajax event ="click" execute= "lista" listener="#{associacaoTag.preparaAssociacao}"
+                                render ="painel :formPrincipal:growl" >
+                        </f:ajax>
+                    </p:commandButton>
+            
+                </h:panelGrid>
+                
+                <p:separator rendered="#{not empty associacaoTag.perguntas }"/>
+                
+                <h:panelGrid columns="1" cellpadding="2" id ="dadosAssoc" rendered="#{not empty associacaoTag.perguntas }">
+                    
+                    <p:panelGrid columns="2">
+                
+                        <h:outputText value="Id:" />
+                        <h:outputText value="#{associacaoTag.tag.id}" />
+ 
+                        <h:outputText value="Descrição:" />
+                        <h:outputText value="#{associacaoTag.tag.descricao}" escape="false" />
+ 
+                        <h:outputText value="Tag:" />
+                        <h:outputText value="#{associacaoTag.tag.tag}" />
+            
+                    </p:panelGrid>
+                
+                    <p:pickList id="ListaAssoc" value="#{associacaoTag.perguntas}" var="perguntas" effect="bounce"
+                                itemValue="#{perguntas}" itemLabel="#{perguntas.descricao}" showCheckbox="true"
+                                showSourceFilter="true" showTargetFilter="true" filterMatchMode="contains" converter="ListaConversao" >
+ 
+                            <f:facet name="sourceCaption">Disponiveis</f:facet>
+                            <f:facet name="targetCaption">Associado</f:facet>
+                            
+                            <p:ajax event="transfer" listener="#{associacaoTag.AposTransferir}" update=":formPrincipal:growl" />
+ 
+                            <p:column style="width:25%">
+                                <h:outputText value= "ID: #{perguntas.id}" />
+                            </p:column>
+ 
+                            <p:column style="width:75%;">
+                                <h:outputText value=" - #{perguntas.descricao}" />
+                            </p:column>
+                            
+                    </p:pickList>
+                    
+                </h:panelGrid>
+                
+                <p:separator rendered="#{not empty associacaoTag.perguntas }"/>
+                
+                <p:commandButton value="Associar" rendered="#{not empty associacaoTag.perguntas }">
+                        <f:ajax event ="click" execute= "ListaAssoc" listener="#{associacaoTag.associar}"
+                                render ="@form" >
+                        </f:ajax>
+                </p:commandButton>
+                
+                
+                
+            </p:panel>
+            
+        </h:form>
+    </ui:define>
+    
+</ui:composition>

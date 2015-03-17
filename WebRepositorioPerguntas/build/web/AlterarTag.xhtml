@@ -1,0 +1,84 @@
+<ui:composition template ="WEB-INF/template/template.xhtml"
+      xmlns = "http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:p="http://primefaces.org/ui">
+    
+    <ui:define name ="conteudo">
+        <h:form>
+            
+            <p:panel styleClass="paineis" header="Alteração de Tag's" id ="painel" >
+            
+                <h:panelGrid columns="4" cellpadding="1">
+                    <p:outputLabel value ="Tag's: " for ="lista" />
+                    <p:selectOneMenu id="lista" value="#{alteraTagBean.idSelecionado}" required ="true" >
+                            <f:selectItem itemLabel="Selecione a Tag" itemValue="" />
+                            <f:selectItems value = "#{tagBean.tags}"
+                                var ="tags"
+                                itemLabel ="#{tags.tag}"
+                                itemValue ="#{tags.id}" />
+                    </p:selectOneMenu>
+                    <p:message for ="lista" />
+            
+                    <p:commandButton value="Carregar">
+                        <f:ajax event ="click" execute= "lista" listener="#{alteraTagBean.preparaAlteracao()}"
+                                render ="painel :formPrincipal:growl" >
+                        </f:ajax>
+                    </p:commandButton>
+            
+                </h:panelGrid>
+                
+                <p:separator rendered="#{not empty alteraTagBean.tag}"/>
+                
+                <p:panelGrid columns="3" id="NumeroTag" rendered="#{not empty alteraTagBean.tag}" >
+                            <h:outputLabel value="ID: "/>
+                            <h:outputText value ="#{alteraTagBean.tag.id}" />
+                </p:panelGrid>
+               
+                <h:panelGrid columns="3" cellpadding="3" id="dadosTag" rendered="#{not empty alteraTagBean.tag}" >
+                     
+                    <p:outputLabel value="Tag : " for ="tag" />
+                    <p:inputText id ="tag" required ="true" value = "#{alteraTagBean.tag.tag}" 
+                                 rendered="#{not empty alteraTagBean.tag}" >
+                    </p:inputText>
+                
+                    <p:message for = "tag" />
+                    
+                    <p:outputLabel value="Descrição : " for ="descricao" />
+                    <p:editor id="descricao" widgetVar="editorWidget" value="#{alteraTagBean.tag.descricao}"
+                              width="600" required ="true" controls=" bold
+                                                                           italic
+                                                                           underline
+                                                                           strikethrough
+                                                                           subscript
+                                                                           superscript
+                                                                           font
+                                                                           size
+                                                                           style
+                                                                           color
+                                                                           highlight
+                                                                           bullets
+                                                                           numbering
+                                                                           alignleft
+                                                                           center
+                                                                           alignright
+                                                                           justify"  />
+                    <p:message for = "descricao" />
+                    
+                    <p:commandButton value="Alterar Tag" update = ":formPrincipal:growl">
+                        <f:ajax event ="click" execute= "dadosTag" listener="#{alteraTagBean.alteraTag()}"
+                                render ="@form" >
+                        </f:ajax>
+                    </p:commandButton>
+                      
+                </h:panelGrid>
+                
+                <p:separator rendered="#{not empty alteraTagBean.tag}"/>
+                       
+         </p:panel>
+            
+        </h:form>
+    </ui:define>
+    
+</ui:composition>

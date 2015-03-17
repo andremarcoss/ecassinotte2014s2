@@ -1,0 +1,145 @@
+<ui:composition template ="WEB-INF/template/template.xhtml"
+      xmlns = "http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:p="http://primefaces.org/ui">
+    
+    <ui:define name ="conteudo">
+        <h:form>
+            
+            <h:inputHidden value ="#{perguntasBean.pergunta.id}"/>
+        
+            <p:panel styleClass="paineis" header="Cadastramento de Perguntas" >
+                <h:panelGrid columns="3" cellpadding="3" id="dadosCadastr" >
+                    <p:outputLabel value="Descrição : " for ="descricao" />
+                    <p:inputText id ="descricao" required ="true"  value = "#{perguntasBean.pergunta.descricao}">
+                    </p:inputText>
+                    
+                    <p:message for = "descricao" />
+                
+                    <p:outputLabel value ="Pergunta: " for ="pergunta" />
+                    <p:editor id="pergunta" value="#{perguntasBean.pergunta.pergunta}"  
+                              width="600"      required ="true" controls=" bold
+                                                                           italic
+                                                                           underline
+                                                                           strikethrough
+                                                                           subscript
+                                                                           superscript
+                                                                           font
+                                                                           size
+                                                                           style
+                                                                           color
+                                                                           highlight
+                                                                           bullets
+                                                                           numbering
+                                                                           alignleft
+                                                                           center
+                                                                           alignright
+                                                                           justify" />
+                    <p:message for ="pergunta" />
+                    
+                    <p:outputLabel value ="Imagem: " for ="fileUp" />
+                    <p:fileUpload fileUploadListener="#{perguntasBean.handleFileUpload}" mode="advanced" dragDropSupport="false"
+                                  update=":formPrincipal:growl out1" fileLimit="1" allowTypes="/(\.|\/)(gif|jpg|jpeg|gif|png|PNG|GIF|JPG|JPEG)$/" id="fileUp"
+                                  uploadLabel="Upload" cancelLabel="Cancelar" fileLimitMessage="Limitado a um arquivo por pergunta"
+                                  label="Procurar" widgetVar="out1" invalidFileMessage="Arquivo não é uma Imagem"  
+                                  />
+                    <p:commandLink id="out1" value="Remover Arquivo" styleClass="link" disabled = "#{empty perguntasBean.pergunta.foto}"
+                                   update=":formPrincipal:growl" >
+                        <f:ajax event ="click" execute= "@this" listener="#{perguntasBean.removerArquivo()}"
+                            render ="@this fileUp :formPrincipal:growl" >
+                        </f:ajax>
+                    </p:commandLink>
+                                       
+                    
+                    <p:outputLabel value ="Genero: " for ="genero" />
+                    <p:selectOneMenu id="genero" value="#{perguntasBean.generoID}" required ="true">
+                        <f:selectItem itemLabel="Selecione o Genero" itemValue="" />
+                        <f:selectItems value = "#{generoBean.generos}"
+                               var ="genero"
+                               itemLabel ="#{genero.genero}"
+                               itemValue ="#{genero.id}" />
+                    </p:selectOneMenu>
+                    <p:message for ="genero" />
+                    
+                    <p:outputLabel value ="Estado " for ="estado" />
+                    <p:selectOneMenu id="estado" value="#{perguntasBean.pergunta.estado}" required ="true">
+                        <f:selectItem itemLabel="Selecione um Estado" itemValue="" />
+                        <f:selectItem itemLabel="Ativo" itemValue="1" />
+                        <f:selectItem itemLabel="Inativo" itemValue="0" />
+                    </p:selectOneMenu>
+                    <p:message for ="estado" />
+                    
+                    <p:outputLabel value="Tipo :" for="tipo" />
+                    <p:selectOneButton value="#{perguntasBean.pergunta.tipo}" id="tipo" required = "true">
+                        <f:selectItem itemLabel="Objetiva" itemValue="1" />
+                        <f:selectItem itemLabel="Multipla Escolha" itemValue="2" />
+                        <f:ajax execute="tipo" listener="#{perguntasBean.alteraTipo()}" render="dadosAlt" /> 
+                    </p:selectOneButton>
+                    <p:message for ="tipo" />
+                
+                </h:panelGrid>
+          
+                <p:separator/>
+                  
+                <h:panelGrid columns="1" cellpadding="2" id ="dadosAlt">
+                    
+                    <h:panelGrid columns="4">
+                    <p:outputLabel value ="Alternativas " for ="alternativas" />
+                    <p:inputText id ="alternativas" required ="true" value = "#{perguntasBean.respostaAux}" size="60">
+                    </p:inputText>
+                                   
+                    <p:commandButton value="Adicionar Alternativa">
+                        <f:ajax event ="click" execute= "tipo alternativas" listener="#{perguntasBean.adicionaAlternativas()}"
+                            render ="dadosAlt" >
+                        </f:ajax>
+                    </p:commandButton>
+                    
+                    <p:message for ="alternativas" />
+                    
+                    </h:panelGrid>
+                                           
+                    <p:dataTable id ="tabela" var="alternat" value="#{perguntasBean.alternativas}" emptyMessage="Nenhuma alternativa inserida"
+                                 styleClass="tabela"> 
+                        
+                        <p:column headerText="Descrição" >
+                            <h:outputText value="#{alternat.resposta}"  />
+                        </p:column>
+                        
+                        <p:column headerText="Alteranativa Correta ?" styleClass="column">
+                            <p:selectBooleanButton id="value2" value="#{alternat.tipo}" 
+                                                   onLabel="" offLabel="" onIcon="ui-icon-check" 
+                                                   offIcon="ui-icon-close" style="width:60px;padding:5px;">
+                                <f:ajax execute= "tabela" listener="#{perguntasBean.ModificaoStatus(alternat)}"
+                                        render ="tabela"  >
+                                </f:ajax>
+                            </p:selectBooleanButton>
+                        </p:column>
+                       
+                        <p:column styleClass="column">
+                            <p:commandLink value ="Remover">
+                                <f:ajax event ="click" execute= "tabela" listener="#{perguntasBean.RemoveItem(alternat)}"
+                                        render ="tabela"  >
+                                </f:ajax>
+                            </p:commandLink>
+                        </p:column>
+                
+                    </p:dataTable> 
+            
+                </h:panelGrid>
+                
+                <p:separator/>
+             
+                <p:commandButton value="Cadastrar" icon="ui-icon-check" update=":formPrincipal:growl" >
+                    <f:ajax event ="click" execute= "descricao pergunta genero estado tipo" 
+                            listener="#{perguntasBean.adiciona()}" render ="@form"  />
+                </p:commandButton>
+                
+           
+            </p:panel>
+                  
+        </h:form>
+    </ui:define>
+    
+</ui:composition>

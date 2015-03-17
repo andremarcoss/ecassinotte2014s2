@@ -1,0 +1,47 @@
+<ui:composition template ="WEB-INF/template/template.xhtml"
+      xmlns = "http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:p="http://primefaces.org/ui">      
+
+    <ui:define name ="conteudo">
+        <h:form>
+            
+            <p:panel styleClass="painelInformativo" header="Autenticação" id="painelAut" rendered="#{not AutenticadorBean.primeiroAcesso}" >
+                                        
+                <h:panelGrid columns="2" style="font-size: 13px;text-align: center">
+                    
+                    <p:outputLabel value="Usuário : " for ="usuario" />
+                    <p:inputText id ="usuario" required ="true" label="Usuário" value = "#{AutenticadorBean.usuario}"/>
+                                    
+                    <p:outputLabel value="Senha : " for ="senha" />
+                    <p:password id="senha" value="#{AutenticadorBean.senha}" label="Senha" required="true"/>
+                                        
+                    <p:commandButton icon="ui-icon-check" action="#{AutenticadorBean.autentica()}"  
+                                     value="Autenticar" update=":formPrincipal:growl">
+                    </p:commandButton>
+                    
+                </h:panelGrid>
+                
+            </p:panel>
+            
+            <p:panel styleClass="painelInformativo" header="Primeiro Acesso" id="painelCad" rendered="#{AutenticadorBean.primeiroAcesso}" >
+            
+                <h:panelGrid columns="2" style="font-size: 13px;text-align: center">
+                    
+                    <p:outputLabel value="Usuário : " for ="Cadusuario" />
+                    <p:inputText id ="Cadusuario" required ="true" label="Usuário" value = "#{AutenticadorBean.usuario}"/>
+                                    
+                    <p:outputLabel value="Senha : " for ="Cadsenha" />
+                    <p:password id="Cadsenha" value="#{AutenticadorBean.senha}" label="Senha" required="true"/>
+                                        
+                    <p:commandButton icon="ui-icon-check" action="#{AutenticadorBean.criacaoUsuario()}"  
+                                     value="Criar" update="@all">
+                    </p:commandButton>
+                    
+                </h:panelGrid>
+            </p:panel>
+            
+        </h:form>
+    </ui:define>
+</ui:composition>    

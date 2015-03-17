@@ -1,0 +1,50 @@
+<ui:composition template ="WEB-INF/template/template.xhtml"
+      xmlns = "http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:p="http://primefaces.org/ui">
+    
+    <ui:define name ="conteudo">
+        <h:form>
+           
+            <p:panel styleClass="paineis" header="Lista de Tag's" >
+                <p:dataTable var="tags" value="#{tagBean.tags}" style="font-size: 13px;margin: 20px;"
+                             filteredValue="#{tagBean.tagsSelecionadas}" widgetVar="TabelaTags"
+                             emptyMessage="Nenhuma tag encontrada utilizando este critério">
+                    
+                    <f:facet name="header">
+                        <p:outputPanel>
+                            <h:outputText value="Pesquisar todos os campos:" />
+                            <p:inputText id="globalFilter" onkeyup="PF('TabelaTags').filter()" styleClass="inputFiltro" placeholder="Inserir palavra-chave"/>
+                        </p:outputPanel>
+                    </f:facet>
+                    
+                    <p:column filterBy="#{tags.id}" headerText="ID" footerText="Contenha" filterMatchMode="contains">
+                        <h:outputText value="#{tags.id}" />
+                    </p:column>
+                    
+                    <p:column filterBy="#{tags.descricao}" headerText="Descrição" footerText="Contenha" filterMatchMode="contains">
+                        <h:outputText value="#{tags.descricao}" escape="false" />
+                    </p:column>
+                    
+                    <p:column filterBy="#{tags.tag}" headerText="Tag's" footerText="Exatamente" filterMatchMode="exact">
+                        <f:facet name="filter">
+                            <p:selectOneMenu onchange="PF('TabelaTags').filter()" >
+                                <f:selectItem itemLabel="Selecione Um" itemValue="#{null}" noSelectionOption="true" />
+                                <f:selectItems value = "#{tagBean.tags}"
+                                    var ="tag"
+                                    itemLabel ="#{tag.tag}"
+                                    itemValue ="#{tag.tag}" />
+                            </p:selectOneMenu>
+                        </f:facet>
+                        <h:outputText value="#{tags.tag}" />
+                    </p:column>
+                  
+                </p:dataTable>
+            </p:panel>
+     
+        </h:form>
+    </ui:define>
+    
+</ui:composition>

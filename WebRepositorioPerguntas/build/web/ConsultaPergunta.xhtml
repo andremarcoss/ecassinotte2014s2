@@ -1,0 +1,59 @@
+<ui:composition template ="WEB-INF/template/template.xhtml"
+      xmlns = "http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:p="http://primefaces.org/ui">
+    
+    <ui:define name ="conteudo">
+                
+        <h:form id = "consPerg">
+           
+            <p:panel styleClass= "paineis" header="Lista de Perguntas" >
+                <p:dataTable id="tabelaPE" var="perguntas" value="#{vizualizacaoPerguntasBean.perguntas}" selectionMode="single" 
+                             selection="#{vizualizacaoPerguntasBean.selecionada}" rowKey="#{perguntas.id}" style="font-size: 13px;margin: 20px;"
+                             filteredValue="#{vizualizacaoPerguntasBean.perguntasFiltradas}" widgetVar="TabelaPerguntas"
+                             emptyMessage="Nenhuma pergunta encontrada utilizando este critério ou nenhuma pergunta disponivel">
+                
+                <f:facet name="header">
+                    <p:outputPanel>
+                        <h:outputText value="Pesquisar todos os campos:" />
+                        <p:inputText id="globalFilter" onkeyup="PF('TabelaPerguntas').filter()" styleClass="inputFiltro" placeholder="Inserir palavra-chave"/>
+                    </p:outputPanel>
+                </f:facet>
+                
+                <p:column filterBy="#{perguntas.id}" headerText="ID" footerText="Contenha" filterMatchMode="contains">
+                    <h:outputText value="#{perguntas.id}" />
+                </p:column>    
+                    
+                <p:column filterBy="#{perguntas.descricao}" headerText="Pergunta" footerText="Contenha" filterMatchMode="contains">
+                    <h:outputText value="#{perguntas.descricao}" />
+                </p:column>
+                    
+                <p:column filterBy="#{perguntas.genero.descricao}" headerText="Gênero" footerText="Exatamente" filterMatchMode="exact">
+                    <f:facet name="filter">
+                        <p:selectOneMenu onchange="PF('TabelaPerguntas').filter()" >
+                            <f:selectItem itemLabel="Selecione Um" itemValue="#{null}" noSelectionOption="true" />
+                            <f:selectItems value = "#{generoBean.generos}"
+                                var ="genero"
+                                itemLabel ="#{genero.genero}"
+                                itemValue ="#{genero.genero}" />
+                        </p:selectOneMenu>
+                    </f:facet>
+                    <h:outputText value="#{perguntas.genero.genero}" />
+                </p:column>
+                
+                <f:facet name="footer">
+                    <p:commandButton value="Vizualizar" icon="ui-icon-extlink" 
+                                     actionListener="#{vizualizacaoPerguntasBean.Vizualiza}">                        
+                    </p:commandButton>
+                </f:facet>
+                    
+                </p:dataTable>
+            </p:panel>
+     
+        </h:form>
+        
+    </ui:define>
+    
+</ui:composition>

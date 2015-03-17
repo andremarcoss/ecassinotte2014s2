@@ -1,0 +1,82 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:p="http://primefaces.org/ui">
+
+    
+        <h:head>
+            <f:facet name="first">
+                <meta content='text/html; charset=UTF-8' http-equiv="Content-Type"/>
+                <title>Repositorio de Perguntas</title>
+            </f:facet>
+        </h:head>
+
+        <h:body>
+            
+            <h:outputStylesheet name ="style.css" library ="css" />
+            
+            <p:panel styleClass="cabecalho">
+                <p:outputLabel value="Repositório de Perguntas" style="font-weight: bold;"></p:outputLabel>
+            </p:panel>
+            
+            <h:form id= "formPrincipal">
+                
+                <p:growl id="growl" showDetail="true" sticky="true"  escape = "false"/> 
+                
+                <p:menubar styleClass="menu" rendered="#{not empty sessionScope.usuario}">
+                        
+                    <p:submenu label="Cadastro" icon="ui-icon-document">
+                        <p:menuitem value="Genero" icon="ui-icon-contact"  outcome="AdicionarGenero"/>
+                        <p:menuitem value="Tag" icon="ui-icon-contact" outcome="AdicionarTag" />
+                        <p:menuitem value="Perguntas" icon="ui-icon-contact" outcome="AdicionarPergunta" />
+                    </p:submenu>
+                        
+                    <p:submenu label="Alterar" icon="ui-icon-pencil">
+                        <p:menuitem value ="Genero" outcome="AlterarGenero" icon="ui-icon-pencil"/>
+                        <p:menuitem value ="Perguntas" outcome="AlterarPergunta" icon="ui-icon-pencil"/>
+                        <p:menuitem value ="Tag's" outcome="AlterarTag" icon="ui-icon-pencil"/>
+                    </p:submenu>
+                    
+                    <p:submenu label="Remover" icon="ui-icon-trash">
+                        <p:menuitem value ="Genero" outcome="RemoverGenero" icon="ui-icon-trash"/>
+                        <p:menuitem value ="Perguntas" outcome="RemoverPergunta" icon="ui-icon-trash"/>
+                        <p:menuitem value ="Tag" outcome="RemoverTag" icon="ui-icon-trash"/>
+                    </p:submenu>
+                    
+                    <p:submenu label="Associação" icon="ui-icon-refresh">
+                        <p:menuitem value ="Associar Tag's" outcome="AssociacaoTag" icon="ui-icon-refresh"/>
+                        <p:menuitem value ="Desassociar Tag's" outcome="DesassociarTag" icon="ui-icon-refresh"/>
+                    </p:submenu>
+                    
+                    
+                    <p:submenu label="Consultar" icon="ui-icon-search">        
+                        <p:menuitem value ="Genero" outcome="ConsultaGeneros" icon="ui-icon-search"/>
+                        <p:menuitem value ="Perguntas" outcome="ConsultaPergunta" icon="ui-icon-search"/>
+                        <p:menuitem value ="Tag's" outcome="ConsultaTag" icon="ui-icon-search"/>
+                        <p:menuitem value ="Tag's X Perguntas " outcome="ConsultaTagPergunta" icon="ui-icon-search"/>
+                    </p:submenu>
+                    
+                    <f:facet name="options">
+                        <p:commandButton icon="ui-icon-person" action="#{usuarioBean.interfaceUsuarios()}" ajax="false" immediate="true"/>      
+                        <p:commandButton icon="ui-icon-home" action="#{AutenticadorBean.voltarHome()}" ajax="false" immediate="true"/>      
+                        <p:commandButton value="Logout" icon="ui-icon-extlink" action="#{AutenticadorBean.registraSaida()}" ajax="false" immediate="true" />
+                    </f:facet>
+                    
+                </p:menubar>
+                
+                <h:panelGroup styleClass="conteudo">
+                    <ui:insert name ="conteudo">
+                  
+                    </ui:insert>
+                </h:panelGroup>
+             
+            </h:form>
+            
+            <p:panel styleClass="rodape">
+                <p:outputLabel style="font-size: 14px;" value = "&copy; 2014 FACCAMP - Faculdade de Campo Limpo Paulista. Todos os direitos reservados."/>
+            </p:panel>
+        </h:body>
+  </html>
+

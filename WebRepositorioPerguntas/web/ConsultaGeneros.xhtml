@@ -1,0 +1,51 @@
+<ui:composition template ="WEB-INF/template/template.xhtml"
+      xmlns = "http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:p="http://primefaces.org/ui">
+    
+    <ui:define name ="conteudo">
+        <h:form>
+           
+            <p:panel styleClass="paineis" header="Lista de Generos" >
+                <p:dataTable var="generos" value="#{generoBean.generos}"
+                             style="font-size: 13px;margin: 20px;"
+                             filteredValue="#{generoBean.generosSelecionados}" widgetVar="TabelaGeneros"
+                             emptyMessage="Nenhum gênero encontrada utilizando este critério">
+                    
+                    <f:facet name="header">
+                        <p:outputPanel>
+                            <h:outputText value="Pesquisar todos os campos:" />
+                            <p:inputText id="globalFilter" onkeyup="PF('TabelaGeneros').filter()" styleClass="inputFiltro" placeholder="Inserir palavra-chave"/>
+                        </p:outputPanel>
+                    </f:facet>
+                    
+                    <p:column filterBy="#{generos.id}" headerText="ID" footerText="Contenha" filterMatchMode="contains">
+                        <h:outputText value="#{generos.id}" />
+                    </p:column>
+                    
+                    <p:column filterBy="#{generos.descricao}" headerText="Descrição" footerText="Contenha" filterMatchMode="contains">
+                        <h:outputText value="#{generos.descricao}" escape="false"/>
+                    </p:column>
+                    
+                    <p:column filterBy="#{generos.genero}" headerText="Gênero" footerText="Exatamente" filterMatchMode="exact">
+                        <f:facet name="filter">
+                            <p:selectOneMenu onchange="PF('TabelaGeneros').filter()" >
+                                <f:selectItem itemLabel="Selecione Um" itemValue="#{null}" noSelectionOption="true" />
+                                <f:selectItems value = "#{generoBean.generos}"
+                                    var ="genero"
+                                    itemLabel ="#{genero.genero}"
+                                    itemValue ="#{genero.genero}" />
+                            </p:selectOneMenu>
+                        </f:facet>
+                        <h:outputText value="#{generos.genero}" />
+                    </p:column>
+                  
+                </p:dataTable>
+            </p:panel>
+     
+        </h:form>
+    </ui:define>
+    
+</ui:composition>

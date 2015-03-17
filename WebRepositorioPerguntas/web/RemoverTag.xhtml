@@ -1,0 +1,71 @@
+<ui:composition template ="WEB-INF/template/template.xhtml"
+      xmlns = "http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:p="http://primefaces.org/ui">
+    
+    <ui:define name ="conteudo">
+               
+        <h:form>
+            
+            <p:panel styleClass="paineis" header="Remoção de Tag" id ="painel" >
+            
+                <h:panelGrid columns="4" cellpadding="1">
+                    <p:outputLabel value ="Tag: " for ="lista" />
+                    <p:selectOneMenu id="lista" value="#{removeTagBean.idSelecionado}" required ="true">
+                            <f:selectItem itemLabel="Selecione a Tag" itemValue="" />
+                            <f:selectItems value = "#{tagBean.tags}"
+                                var ="tags"
+                                itemLabel ="#{tags.tag}"
+                                itemValue ="#{tags.id}" />
+                    </p:selectOneMenu>
+                    <p:message for ="lista" />
+            
+                    <p:commandButton value="Carregar">
+                        <f:ajax event ="click" execute= "lista" listener="#{removeTagBean.preparaRemocao()}"
+                                render ="@form" >
+                        </f:ajax>
+                    </p:commandButton>
+            
+                </h:panelGrid>
+                
+                <p:separator rendered="#{not empty removeTagBean.tag}"/>
+               
+                <h:panelGrid columns="2" cellpadding="3" id="dadosTag" rendered="#{not empty removeTagBean.tag}" >
+                   
+                    <p:panelGrid columns="2">
+                 
+                        <h:outputLabel value="ID: "/>
+                        <h:outputText value ="#{removeTagBean.tag.id}" />
+                   
+                        <h:outputLabel value="Descrição: "/>
+                        <h:outputText value ="#{removeTagBean.tag.descricao}" escape="false" />
+                   
+                        <h:outputLabel value="Tag: "/>
+                        <h:outputText value ="#{removeTagBean.tag.tag}" />
+                        
+                   </p:panelGrid>
+                                   
+                   <p:commandButton value="Remover Tag" update = ":formPrincipal:growl">
+                       <f:ajax event ="click" execute= "dadosTag" listener="#{removeTagBean.remover()}"
+                                render ="@form" >
+                       </f:ajax>
+                       <p:confirm header="Confirmação" message="Deseja realmente remover?" icon="ui-icon-alert" />
+                   </p:commandButton>
+                      
+                </h:panelGrid>
+                
+                <p:separator rendered="#{not empty removeTagBean.tag}"/>
+                       
+         </p:panel>
+            
+        <p:confirmDialog global="true" showEffect="fade" style="font-size: 13px">
+            <p:commandButton value="Sim" type="button" styleClass="ui-confirmdialog-yes" icon="ui-icon-check" />
+            <p:commandButton value="Não" type="button" styleClass="ui-confirmdialog-no" icon="ui-icon-close" />
+        </p:confirmDialog>
+            
+        </h:form>
+    </ui:define>
+    
+</ui:composition>

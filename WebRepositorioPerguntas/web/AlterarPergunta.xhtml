@@ -1,0 +1,189 @@
+<ui:composition template ="WEB-INF/template/template.xhtml"
+      xmlns = "http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:p="http://primefaces.org/ui">
+    
+    <ui:define name ="conteudo">
+        <h:form>
+            
+            <p:panel styleClass="paineis" header="Alteração de Pergunta" id ="painel" >
+            
+                <h:panelGrid columns="4" cellpadding="1">
+                    <p:outputLabel value ="Pergunta: " for ="lista" />
+                    <p:selectOneMenu id="lista" value="#{alteraPergBean.idSelecionado}" required ="true">
+                            <f:selectItem itemLabel="Selecione o ID pergunta" itemValue="" />
+                            <f:selectItems value = "#{vizualizacaoPerguntasBean.perguntas}"
+                                var ="perguntas"
+                                itemLabel ="#{perguntas.id}"
+                                itemValue ="#{perguntas.id}" />
+                    </p:selectOneMenu>
+                    <p:message for ="lista" />
+            
+                    <p:commandButton value="Carregar">
+                        <f:ajax event ="click" execute= "lista" listener="#{alteraPergBean.preparaAlteracao()}"
+                                render ="painel :formPrincipal:growl" >
+                        </f:ajax>
+                    </p:commandButton>
+            
+                </h:panelGrid>
+                
+                <p:separator rendered="#{not empty alteraPergBean.pergunta}" />
+                
+                <p:panelGrid columns="3" id="NumeroGenero" rendered="#{not empty alteraPergBean.pergunta}" >
+                            <h:outputLabel value="ID: "/>
+                            <h:outputText value ="#{alteraPergBean.pergunta.id}" />
+                </p:panelGrid>
+               
+                <h:panelGrid columns="3" cellpadding="3" id="dadosPerg" rendered="#{not empty alteraPergBean.pergunta}" >
+                    
+                    <p:outputLabel value="Descrição : " for ="descricao" />
+                    <p:inputText id ="descricao" required ="true" value = "#{alteraPergBean.pergunta.descricao}">
+                    </p:inputText>
+                    
+                    <p:message for = "descricao" />
+                
+                    <p:outputLabel value ="Pergunta: " for ="pergunta" />
+                    <p:editor id="pergunta" widgetVar="editorWidget" value="#{alteraPergBean.pergunta.pergunta}"
+                              width="600" required ="true" controls=" bold
+                                                                           italic
+                                                                           underline
+                                                                           strikethrough
+                                                                           subscript
+                                                                           superscript
+                                                                           font
+                                                                           size
+                                                                           style
+                                                                           color
+                                                                           highlight
+                                                                           bullets
+                                                                           numbering
+                                                                           alignleft
+                                                                           center
+                                                                           alignright
+                                                                           justify"  />
+                    <p:message for ="pergunta" />
+                    
+                    <p:outputLabel value ="Imagem: " for ="fileUp" />
+                    <p:fileUpload fileUploadListener="#{alteraPergBean.handleFileUpload}" mode="advanced" dragDropSupport="false"
+                                  update=":formPrincipal:growl out1" fileLimit="1" allowTypes="/(\.|\/)(gif|jpg|jpeg|gif|png|PNG|GIF|JPG|JPEG)$/" id="fileUp"
+                                  uploadLabel="Upload" cancelLabel="Cancelar" fileLimitMessage="Limitado a um arquivo por pergunta"
+                                  label="Procurar" widgetVar="out1" invalidFileMessage="Arquivo não é uma Imagem"  
+                                  />
+                    <p:commandLink id="out1" value="Remover Arquivo" style = "color:#156bbd" disabled = "#{empty alteraPergBean.pergunta.foto}"
+                                   update=":formPrincipal:growl" >
+                        <f:ajax event ="click" execute= "@this" listener="#{alteraPergBean.removerArquivo()}"
+                            render ="@this fileUp :formPrincipal:growl" >
+                        </f:ajax>
+                    </p:commandLink>
+                    
+                    <p:outputLabel value ="Genero: " for ="genero" />
+                    <p:selectOneMenu id="genero" value="#{alteraPergBean.pergunta.genero.id}" required ="true" >
+                        <f:selectItem itemLabel="Selecione o Genero" itemValue="" />
+                        <f:selectItems value = "#{generoBean.generos}"
+                               var ="genero"
+                               itemLabel ="#{genero.genero}"
+                               itemValue ="#{genero.id}" />
+                    </p:selectOneMenu>
+                    <p:message for ="genero" />
+                    
+                                   
+                    <p:outputLabel value ="Estado " for ="estado" />
+                    <p:selectOneMenu id="estado" value="#{alteraPergBean.pergunta.estado}" required ="true" >
+                        <f:selectItem itemLabel="Selecione um Estado" itemValue="" />
+                        <f:selectItem itemLabel="Ativo" itemValue="1" />
+                        <f:selectItem itemLabel="Inativo" itemValue="0" />
+                    </p:selectOneMenu>
+                    <p:message for ="estado" />
+                    
+                    <p:outputLabel value="Tipo :" for="tipo" />
+                    <p:selectOneButton value="#{alteraPergBean.pergunta.tipo}" id="tipo" required = "true">
+                        <f:selectItem itemLabel="Objetiva" itemValue="1" />
+                        <f:selectItem itemLabel="Multipla Escolha" itemValue="2" />
+                        <f:ajax execute="@this" render="alternativasPerg" listener="#{alteraPergBean.alteraTipo()}" /> 
+                    </p:selectOneButton>
+                    <p:message for ="tipo" />
+                    
+                    </h:panelGrid>
+                    
+                    <p:separator rendered="#{not empty alteraPergBean.pergunta}"/>
+                    
+                    <h:panelGrid columns="1" cellpadding="2" rendered="#{not empty alteraPergBean.pergunta}">
+
+                        <p:dataTable id="alternativasPerg" var="alt" value="#{alteraPergBean.alternativas}" editable="true" styleClass="tabela">
+                       
+                        <f:facet name="header">
+                            Alternativas
+                        </f:facet>
+ 
+                        <p:ajax event="rowEdit" listener="#{alteraPergBean.onRowEdit}" update=":formPrincipal:growl" />
+                        <p:ajax event="rowEditCancel" listener="#{alteraPergBean.onRowCancel}" update=":formPrincipal:growl" />
+                                               
+                        <p:column headerText="Id">
+                             <h:outputText value="#{alt.id}" />
+                        </p:column>
+ 
+                       <p:column headerText="Resposta" style = "width:600px;">
+                            <p:cellEditor>
+                                <f:facet name="output"><h:outputText value="#{alt.resposta}" /></f:facet>
+                                <f:facet name="input"><p:inputText value="#{alt.resposta}" style="width:100%" /></f:facet>
+                            </p:cellEditor>
+                       </p:column>
+ 
+                        <p:column headerText="Tipo">
+                        
+                            <p:cellEditor>
+                                <f:facet name="output"><h:outputText value="#{alt.tipo == true ? 'Verdadeira' : 'Falsa'}" /></f:facet>
+                                <f:facet name="input">
+                                    <p:selectBooleanCheckbox value="#{alt.tipo}" />
+                                </f:facet>
+                            </p:cellEditor>
+                        </p:column>
+  
+                    <p:column style="width:32px">
+                        <p:rowEditor />
+                    </p:column>
+                    
+                    <p:column>
+                        <p:commandLink value ="Remover">
+                            <f:ajax event ="click" execute= "alternativasPerg" listener="#{alteraPergBean.removeItem(alt)}"
+                                        render ="alternativasPerg"  >
+                            </f:ajax>
+                        </p:commandLink>
+                    </p:column>
+                        
+                </p:dataTable>
+                        
+                <h:panelGrid columns="4">
+                    <p:outputLabel value ="Alternativas " for ="inclusaoAlt" />
+                    <p:inputText id ="inclusaoAlt" required ="true" value = "#{alteraPergBean.respostaAux}" size="60">
+                    </p:inputText>
+                    <p:message for ="inclusaoAlt" />
+                    
+                    <p:commandButton value="Adicionar Alternativa">
+                        <f:ajax event ="click" execute= "inclusaoAlt" listener="#{alteraPergBean.adicionaAlternativas()}"
+                            render ="alternativasPerg" >
+                        </f:ajax>
+                    </p:commandButton>  
+              
+                </h:panelGrid>        
+                
+              
+                        
+                <p:commandButton value="Alterar" icon="ui-icon-check" update=":formPrincipal:growl" >
+                    <f:ajax event ="click" execute= "descricao pergunta genero estado tipo alternativasPerg " listener="#{alteraPergBean.Alterar}"
+                            render ="@form" />
+                </p:commandButton>
+                        
+                
+                </h:panelGrid>
+                    
+            
+         
+            </p:panel>
+            
+        </h:form>
+    </ui:define>
+    
+</ui:composition>

@@ -1,0 +1,71 @@
+<ui:composition template ="WEB-INF/template/template.xhtml"
+      xmlns = "http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:p="http://primefaces.org/ui">
+    
+    <ui:define name ="conteudo">
+               
+        <h:form>
+            
+            <p:panel styleClass="paineis" header="Remoção de Generos" id ="painel" >
+            
+                <h:panelGrid columns="4" cellpadding="1">
+                    <p:outputLabel value ="Genero: " for ="lista" />
+                    <p:selectOneMenu id="lista" value="#{removeGeneroBean.selecionado}" required ="true" >
+                            <f:selectItem itemLabel="Selecione o Genero" itemValue="" />
+                            <f:selectItems value = "#{generoBean.generos}"
+                                var ="genero"
+                                itemLabel ="#{genero.genero}"
+                                itemValue ="#{genero.id}" />
+                    </p:selectOneMenu>
+                    <p:message for ="lista" />
+            
+                    <p:commandButton value="Carregar">
+                        <f:ajax event ="click" execute= "lista" listener="#{removeGeneroBean.preparaRemocao}"
+                                render ="@form" >
+                        </f:ajax>
+                    </p:commandButton>
+            
+                </h:panelGrid>
+                
+                <p:separator rendered="#{not empty removeGeneroBean.genero}"/>
+               
+                <h:panelGrid columns="2" cellpadding="3" id="dadosGenero" rendered="#{not empty removeGeneroBean.genero}" >
+                   
+                    <p:panelGrid columns="2">
+                 
+                        <h:outputLabel value="ID: "/>
+                        <h:outputText value ="#{removeGeneroBean.genero.id}" />
+                   
+                        <h:outputLabel value="Descrição: "/>
+                        <h:outputText value ="#{removeGeneroBean.genero.descricao}" escape="false" />
+                   
+                        <h:outputLabel value="Genero: "/>
+                        <h:outputText value ="#{removeGeneroBean.genero.genero}" />
+                        
+                   </p:panelGrid>
+                                   
+                   <p:commandButton value="Remover Gênero" update = ":formPrincipal:growl">
+                       <f:ajax event ="click" execute= "dadosGenero" listener="#{removeGeneroBean.remover}"
+                                render ="@form" >
+                       </f:ajax>
+                       <p:confirm header="Confirmação" message="Deseja realmente remover?" icon="ui-icon-alert" />
+                   </p:commandButton>
+                      
+                </h:panelGrid>
+                
+                <p:separator rendered="#{not empty removeGeneroBean.genero}"/>
+                       
+         </p:panel>
+            
+        <p:confirmDialog global="true" showEffect="fade" style="font-size: 13px">
+            <p:commandButton value="Sim" type="button" styleClass="ui-confirmdialog-yes" icon="ui-icon-check" />
+            <p:commandButton value="Não" type="button" styleClass="ui-confirmdialog-no" icon="ui-icon-close" />
+        </p:confirmDialog>
+            
+        </h:form>
+    </ui:define>
+    
+</ui:composition>

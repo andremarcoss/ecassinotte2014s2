@@ -1,0 +1,69 @@
+<ui:composition template ="WEB-INF/template/template.xhtml"
+      xmlns = "http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:p="http://primefaces.org/ui">
+    
+    <ui:define name ="conteudo">
+        <h:form>
+            
+            <p:panel styleClass="paineis" header="Lista de Tag X Perguntas" >
+                
+                <p:tagCloud model="#{tagBean.modelTag}" style="font-size: 18px;width: 100%">
+                            <p:ajax event="select" listener="#{vizualizacaoTagPergBean.onSelect}" update="tabelaDados" />
+                         </p:tagCloud>
+                
+                <p:dataGrid var="perguntas" value="#{vizualizacaoTagPergBean.perguntas}" columns="2"
+                            rows="12" paginator="true" id='tabelaDados' style="font-size: 13px;"
+                            emptyMessage="Nenhuma registro encontrado utilizando este critério ou nenhuma registro disponivel">
+
+                    <f:facet name="header">
+                        <h:panelGrid columns="2">
+                            <h:outputText value="Pesquisar pela TAG:"/>
+                            <p:selectOneMenu id="lista" value="#{vizualizacaoTagPergBean.idSelecionado}" >
+                                <f:selectItem itemLabel="Sem Filtro" itemValue="0" />
+                                <f:selectItems value = "#{tagBean.tags}"
+                                    var ="tag"
+                                    itemLabel ="#{tag.id} - #{tag.tag}"
+                                    itemValue ="#{tag.id}" />
+                                <f:ajax execute= "lista" listener="#{vizualizacaoTagPergBean.filtra()}"
+                                        render ="tabelaDados" >
+                                </f:ajax>
+                                
+                            </p:selectOneMenu>
+                        </h:panelGrid>
+                    </f:facet>
+                   
+                    <p:panel>
+                        <p:panelGrid columns="2" style="width: 60%" styleClass="painelGrid">
+                            
+                            <p:outputLabel value="ID : " for ="pergID" style="font-weight: bold;"/>
+                            <h:outputText value="#{perguntas.id}" id="pergID"/>
+                            
+                            <p:outputLabel value="Descrição : " for ="pergDesc" style="font-weight: bold;" />
+                            <h:outputText value="#{perguntas.descricao}" id="pergDesc" />
+                            
+                            <p:outputLabel value="Genero : " for ="generoDesc" style="font-weight: bold;" />
+                            <h:outputText value="#{perguntas.genero.descricao}" id ="generoDesc" />
+                            
+                            <p:outputLabel value="Tag's associadas : " style="font-weight: bold;" />
+                            
+                            <ui:repeat value="#{perguntas.tag}" var="tagsPerg">
+                                <h:outputLabel value = "[ #{tagsPerg.id} - #{tagsPerg.tag}  ] "/>                       
+                            </ui:repeat>
+                            
+                        </p:panelGrid>
+                        
+                        <p:commandLink title="Vizualizar" action="#{vizualizacaoTagPergBean.vizualiza(perguntas)}">
+                             <h:outputText styleClass="ui-icon ui-icon-search" style="margin:0 auto;" />
+                        </p:commandLink>
+                    </p:panel>
+ 
+                </p:dataGrid>
+            </p:panel>
+     
+        </h:form>
+    </ui:define>
+    
+</ui:composition>

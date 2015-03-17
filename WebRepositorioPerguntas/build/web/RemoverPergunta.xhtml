@@ -1,0 +1,84 @@
+<ui:composition template ="WEB-INF/template/template.xhtml"
+      xmlns = "http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:p="http://primefaces.org/ui">
+    
+    <ui:define name ="conteudo">
+        <h:form>
+            
+            <p:panel styleClass="paineis" header="Remoção de Pergunta" id ="painel" >
+            
+                <h:panelGrid columns="4" cellpadding="1">
+                    <p:outputLabel value ="Pergunta: " for ="lista" />
+                    <p:selectOneMenu id="lista" value="#{remocaoPerguntasBean.selecionada}" required ="true" >
+                            <f:selectItem itemLabel="Selecione ID da Pergunta" itemValue="" />
+                            <f:selectItems value = "#{vizualizacaoPerguntasBean.perguntas}"
+                                var ="perguntas"
+                                itemLabel ="#{perguntas.id}"
+                                itemValue ="#{perguntas.id}" />
+                    </p:selectOneMenu>
+                    <p:message for ="lista" />
+            
+                    <p:commandButton value="Carregar">
+                        <f:ajax event ="click" execute= "lista" listener="#{remocaoPerguntasBean.removerPreparacao()}"
+                                render ="painel :formPrincipal:growl" >
+                        </f:ajax>
+                    </p:commandButton>
+            
+                </h:panelGrid>
+                
+                <p:separator rendered="#{not empty remocaoPerguntasBean.pergunta}" />
+                
+                <h:panelGrid columns="2" cellpadding="3" id="dadosPerg" rendered="#{not empty remocaoPerguntasBean.pergunta}" >
+                
+                    <p:panelGrid columns="2" id="NumeroGenero">
+                            <h:outputLabel value="ID: "/>
+                            <h:outputText value ="#{remocaoPerguntasBean.pergunta.id}" />
+                            
+                            <h:outputLabel value="Descrição: "/>
+                            <h:outputText value ="#{remocaoPerguntasBean.pergunta.descricao}" />
+                            
+                            <h:outputLabel value="Pergunta: "/>
+                            <h:outputText value ="#{remocaoPerguntasBean.pergunta.pergunta}"  escape="false" />
+                            
+                            <h:outputText value="Imagem:" rendered="#{not empty remocaoPerguntasBean.arquivoImagem}" />
+                            <h:graphicImage value = "resources/imagens/#{remocaoPerguntasBean.arquivoImagem}" style="width: 400px;height: 200px;"
+                                rendered="#{not empty remocaoPerguntasBean.arquivoImagem}"/>
+                            
+                            <h:outputLabel value="Estado: "/>
+                            <h:outputText value ="#{remocaoPerguntasBean.pergunta.estado == 1 ? 'Ativo' : 'Inativo'}" />
+                            
+                            <h:outputLabel value="Tipo: "/>
+                            <h:outputText value ="#{remocaoPerguntasBean.pergunta.tipo == 1 ? 'Objetiva' : 'Multipla-Escolha'}" />
+                            
+                            <h:outputLabel value="Gênero: "/>
+                            <h:outputText value ="#{remocaoPerguntasBean.pergunta.genero.genero}" />
+                            
+                            
+                    </p:panelGrid>
+                    
+                    <p:commandButton value="Remover Pergunta" update = ":formPrincipal:growl">
+                        <f:ajax event ="click" execute= "dadosPerg" listener="#{remocaoPerguntasBean.remover()}"
+                                render ="@form" >
+                       </f:ajax>
+                       <p:confirm header="Confirmação" message="Deseja realmente remover a pergunta e suas alternativas associadas?" icon="ui-icon-alert" />
+                   </p:commandButton>
+                    
+                </h:panelGrid>
+                    
+                <p:separator rendered="#{not empty remocaoPerguntasBean.pergunta}"/>
+
+                
+            </p:panel>
+            
+            <p:confirmDialog global="true" showEffect="fade" style="font-size: 13px">
+                <p:commandButton value="Sim" type="button" styleClass="ui-confirmdialog-yes" icon="ui-icon-check" />
+                <p:commandButton value="Não" type="button" styleClass="ui-confirmdialog-no" icon="ui-icon-close" />
+            </p:confirmDialog>
+                
+        </h:form>
+    </ui:define>
+    
+</ui:composition>
